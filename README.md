@@ -42,11 +42,15 @@ irm https://astral.sh/uv/install.ps1 | iex
 
 1. **Buka Terminal**
 
-2. **Clone project ini**, lalu masuk ke folder project:
+2. **Clone project ini:**
 ```bash
 git clone https://github.com/MandoPurba/backend-fast.git
 # atau (SSH)
 git clone git@github.com:MandoPurba/backend-fast.git
+```
+
+3. **Masuk ke folder project:**
+```bash
 cd backend-fast
 ```
 
@@ -70,11 +74,15 @@ python -c "import flask; print(flask.__version__)"
 
 1. **Buka Command Prompt atau PowerShell**
 
-2. **Clone project ini**, lalu masuk ke folder project:
+2. **Clone project ini:**
 ```powershell
 git clone https://github.com/MandoPurba/backend-fast.git
 # atau (SSH)
 git clone git@github.com:MandoPurba/backend-fast.git
+```
+
+3. **Masuk ke folder project:**
+```powershell
 cd backend-fast
 ```
 
