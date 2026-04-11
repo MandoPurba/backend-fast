@@ -23,15 +23,15 @@ class TestGetAllUsers:
         """get_all_users mengembalikan list"""
         reset_data()
         users = get_all_users()
-        assert isinstance(users, list)
+        assert isinstance(users, list), "Expected get_all_users() to return a list"
 
     def test_get_all_users_with_data(self):
         """get_all_users mengembalikan semua user"""
         reset_data()
         users = get_all_users()
-        assert len(users) == 2
-        assert users[0]["name"] == "Alice"
-        assert users[1]["name"] == "Bob"
+        assert len(users) == 2, f"Expected 2 users, got {len(users)}"
+        assert users[0]["name"] == "Alice", "Expected first user name to be 'Alice'"
+        assert users[1]["name"] == "Bob", "Expected second user name to be 'Bob'"
 
 
 class TestGetUserById:
@@ -41,15 +41,15 @@ class TestGetUserById:
         """get_user_by_id mengembalikan user yang ada"""
         reset_data()
         user = get_user_by_id(user_id=1)
-        assert user is not None
-        assert user["id"] == 1
-        assert user["name"] == "Alice"
+        assert user is not None, "Expected user with id=1 to exist"
+        assert user["id"] == 1, f"Expected user id to be 1, got {user['id']}"
+        assert user["name"] == "Alice", "Expected user name to be 'Alice'"
 
     def test_get_user_by_id_not_found(self):
         """get_user_by_id mengembalikan None untuk user yang tidak ada"""
         reset_data()
         user = get_user_by_id(user_id=99)
-        assert user is None
+        assert user is None, "Expected None for non-existent user id"
 
 
 class TestCreateUser:
@@ -59,15 +59,15 @@ class TestCreateUser:
         """ID user auto increment"""
         reset_data()
         user = create_user(name="Charlie")
-        assert user["id"] == 3
+        assert user["id"] == 3, f"Expected new user id=3, got {user['id']}"
 
     def test_create_user_has_correct_structure(self):
         """User baru memiliki field yang benar"""
         reset_data()
         user = create_user(name="Charlie")
-        assert "id" in user
-        assert "name" in user
-        assert user["name"] == "Charlie"
+        assert "id" in user, "Expected 'id' field in created user"
+        assert "name" in user, "Expected 'name' field in created user"
+        assert user["name"] == "Charlie", "Expected user name to be 'Charlie'"
 
 
 class TestGetAllTasks:
@@ -77,13 +77,13 @@ class TestGetAllTasks:
         """get_all_tasks mengembalikan list"""
         reset_data()
         tasks = get_all_tasks()
-        assert isinstance(tasks, list)
+        assert isinstance(tasks, list), "Expected get_all_tasks() to return a list"
 
     def test_get_all_tasks_with_data(self):
         """get_all_tasks mengembalikan semua task"""
         reset_data()
         tasks = get_all_tasks()
-        assert len(tasks) == 3
+        assert len(tasks) == 3, f"Expected 3 tasks, got {len(tasks)}"
 
 
 class TestGetTaskById:
@@ -93,14 +93,16 @@ class TestGetTaskById:
         """get_task_by_id mengembalikan task yang ada"""
         reset_data()
         task = get_task_by_id(task_id=1)
-        assert task is not None
-        assert task["title"] == "Buy groceries"
+        assert task is not None, "Expected task with id=1 to exist"
+        assert task["title"] == "Buy groceries", (
+            "Expected task title to be 'Buy groceries'"
+        )
 
     def test_get_task_by_id_not_found(self):
         """get_task_by_id mengembalikan None untuk task yang tidak ada"""
         reset_data()
         task = get_task_by_id(task_id=99)
-        assert task is None
+        assert task is None, "Expected None for non-existent task id"
 
 
 class TestGetTasksByUser:
@@ -110,21 +112,23 @@ class TestGetTasksByUser:
         """get_tasks_by_user mengembalikan list"""
         reset_data()
         tasks = get_tasks_by_user(user_id=1)
-        assert isinstance(tasks, list)
+        assert isinstance(tasks, list), "Expected get_tasks_by_user() to return a list"
 
     def test_get_tasks_by_user_with_data(self):
         """get_tasks_by_user mengembalikan task sesuai user_id"""
         reset_data()
         tasks = get_tasks_by_user(user_id=1)
-        assert len(tasks) == 2
+        assert len(tasks) == 2, f"Expected 2 tasks for user_id=1, got {len(tasks)}"
         for task in tasks:
-            assert task["user_id"] == 1
+            assert task["user_id"] == 1, (
+                "Expected task.user_id to match requested user_id"
+            )
 
     def test_get_tasks_by_user_empty(self):
         """get_tasks_by_user mengembalikan list kosong untuk user tanpa task"""
         reset_data()
         tasks = get_tasks_by_user(user_id=2)
-        assert len(tasks) == 1  # Bob has "Read a book"
+        assert len(tasks) == 1, f"Expected 1 task for user_id=2, got {len(tasks)}"
 
 
 class TestCreateTask:
@@ -134,18 +138,20 @@ class TestCreateTask:
         """ID task auto increment"""
         reset_data()
         task = create_task(user_id=1, title="New task")
-        assert task["id"] == 4
+        assert task["id"] == 4, f"Expected new task id=4, got {task['id']}"
 
     def test_create_task_has_correct_structure(self):
         """Task baru memiliki field yang benar"""
         reset_data()
         task = create_task(user_id=1, title="New task")
-        assert "id" in task
-        assert "title" in task
-        assert "is_completed" in task
-        assert "user_id" in task
-        assert task["title"] == "New task"
-        assert task["is_completed"] is False
+        assert "id" in task, "Expected 'id' field in created task"
+        assert "title" in task, "Expected 'title' field in created task"
+        assert "is_completed" in task, "Expected 'is_completed' field in created task"
+        assert "user_id" in task, "Expected 'user_id' field in created task"
+        assert task["title"] == "New task", "Expected task title to be 'New task'"
+        assert task["is_completed"] is False, (
+            "Expected is_completed to default to False"
+        )
 
 
 class TestUpdateTask:
@@ -155,13 +161,15 @@ class TestUpdateTask:
         """update_task dapat mengubah is_completed"""
         reset_data()
         task = update_task(task_id=1, updates={"is_completed": True})
-        assert task["is_completed"] is True
+        assert task["is_completed"] is True, (
+            "Expected is_completed to be True after update"
+        )
 
     def test_update_task_title(self):
         """update_task dapat mengubah title"""
         reset_data()
         task = update_task(task_id=1, updates={"title": "Updated title"})
-        assert task["title"] == "Updated title"
+        assert task["title"] == "Updated title", "Expected title to be updated"
 
 
 class TestDeleteTask:
@@ -171,14 +179,14 @@ class TestDeleteTask:
         """delete_task mengembalikan True jika berhasil"""
         reset_data()
         result = delete_task(task_id=1)
-        assert result is True
+        assert result is True, "Expected delete_task to return True for existing task"
 
     def test_delete_task_removes_from_list(self):
         """delete_task menghapus task dari list"""
         reset_data()
         delete_task(task_id=1)
         task = get_task_by_id(task_id=1)
-        assert task is None
+        assert task is None, "Expected deleted task to be removed from storage"
 
 
 class TestResetData:
@@ -192,8 +200,8 @@ class TestResetData:
         reset_data()
         users = get_all_users()
         tasks = get_all_tasks()
-        assert len(users) == 2
-        assert len(tasks) == 3
+        assert len(users) == 2, f"Expected 2 users after reset, got {len(users)}"
+        assert len(tasks) == 3, f"Expected 3 tasks after reset, got {len(tasks)}"
 
 
 if __name__ == "__main__":

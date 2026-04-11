@@ -1,7 +1,3 @@
-task-forge-lite/TASK.md
-```
-
-```markdown
 # TaskForge Lite - Daftar Tugas
 
 Tugas ini bertujuan untuk melatih pemahaman tentang **layered architecture**, **Flask API**, dan **CRUD operations** tanpa database.

@@ -1,4 +1,4 @@
-"""Unit Tests untuk Handler Layer (Flask API)"""
+"""End-to-End Tests untuk Handler Layer (Flask API)"""
 
 import pytest
 from flask import Flask
@@ -10,6 +10,7 @@ from database.inmemory import reset_data
 def app():
     """Fixture untuk membuat Flask app"""
     from app import create_app
+
     app = create_app()
     app.config["TESTING"] = True
     yield app
@@ -30,178 +31,174 @@ def setup_and_teardown():
 
 
 class TestHealthCheck:
-    """Test untuk health check endpoint"""
+    """E2E test untuk health check endpoint"""
 
     def test_health_check_returns_healthy(self, client):
         """GET /health mengembalikan status healthy"""
         response = client.get("/health")
-        assert response.status_code == 200
+        assert response.status_code == 200, "Expected /health to return status 200"
         data = response.get_json()
-        assert data["status"] == "healthy"
+        assert data["status"] == "healthy", "Expected status to be 'healthy'"
 
 
 class TestUserHandler:
-    """Test untuk User Handler API"""
+    """E2E test untuk User Handler API"""
 
     def test_create_user_success(self, client):
         """POST /users - berhasil membuat user baru"""
         response = client.post("/users", json={"name": "Charlie"})
-        assert response.status_code == 201
+        assert response.status_code == 201, "Expected status 201 on user creation"
         data = response.get_json()
-        assert data["name"] == "Charlie"
-        assert "id" in data
+        assert data["name"] == "Charlie", "Expected created user's name to be 'Charlie'"
+        assert "id" in data, "Expected created user to include an 'id' field"
 
     def test_create_user_missing_name(self, client):
         """POST /users - gagal jika name kosong"""
         response = client.post("/users", json={"name": ""})
-        assert response.status_code == 400
+        assert response.status_code == 400, "Expected status 400 for empty name"
 
     def test_list_users(self, client):
         """GET /users - mendapatkan semua user"""
         response = client.get("/users")
-        assert response.status_code == 200
+        assert response.status_code == 200, "Expected status 200 on list users"
         data = response.get_json()
-        assert len(data) == 2
-        assert data[0]["name"] == "Alice"
-        assert data[1]["name"] == "Bob"
+        assert len(data) == 2, f"Expected 2 users, got {len(data)}"
+        assert data[0]["name"] == "Alice", "Expected first user name to be 'Alice'"
+        assert data[1]["name"] == "Bob", "Expected second user name to be 'Bob'"
 
     def test_get_user_by_id_found(self, client):
         """GET /users/<user_id> - user ditemukan"""
         response = client.get("/users/1")
-        assert response.status_code == 200
+        assert response.status_code == 200, "Expected status 200 for existing user"
         data = response.get_json()
-        assert data["name"] == "Alice"
+        assert data["name"] == "Alice", "Expected user name to be 'Alice'"
 
     def test_get_user_by_id_not_found(self, client):
         """GET /users/<user_id> - user tidak ditemukan"""
         response = client.get("/users/99")
-        assert response.status_code == 404
+        assert response.status_code == 404, "Expected status 404 for missing user"
 
 
 class TestTaskHandler:
-    """Test untuk Task Handler API"""
+    """E2E test untuk Task Handler API"""
 
     def test_create_task_success(self, client):
         """POST /tasks - berhasil membuat task baru"""
-        response = client.post("/tasks", json={
-            "user_id": 1,
-            "title": "New task"
-        })
-        assert response.status_code == 201
+        response = client.post("/tasks", json={"user_id": 1, "title": "New task"})
+        assert response.status_code == 201, "Expected status 201 on task creation"
         data = response.get_json()
-        assert data["title"] == "New task"
-        assert data["user_id"] == 1
-        assert data["is_completed"] is False
+        assert data["title"] == "New task", "Expected task title to be 'New task'"
+        assert data["user_id"] == 1, "Expected task user_id to be 1"
+        assert data["is_completed"] is False, "Expected is_completed to be False"
 
     def test_create_task_user_not_found(self, client):
         """POST /tasks - gagal jika user tidak ada"""
-        response = client.post("/tasks", json={
-            "user_id": 99,
-            "title": "Some task"
-        })
-        assert response.status_code == 404
+        response = client.post("/tasks", json={"user_id": 99, "title": "Some task"})
+        assert response.status_code == 404, "Expected status 404 for missing user"
 
     def test_create_task_empty_title(self, client):
         """POST /tasks - gagal jika title kosong"""
-        response = client.post("/tasks", json={
-            "user_id": 1,
-            "title": ""
-        })
-        assert response.status_code == 400
+        response = client.post("/tasks", json={"user_id": 1, "title": ""})
+        assert response.status_code == 400, "Expected status 400 for empty title"
 
     def test_create_task_duplicate_title(self, client):
         """POST /tasks - gagal jika title duplicate untuk user sama"""
         client.post("/tasks", json={"user_id": 1, "title": "Buy groceries"})
-        response = client.post("/tasks", json={
-            "user_id": 1,
-            "title": "Buy groceries"
-        })
-        assert response.status_code == 409
+        response = client.post("/tasks", json={"user_id": 1, "title": "Buy groceries"})
+        assert response.status_code == 409, "Expected status 409 for duplicate title"
 
     def test_create_task_max_10_per_user(self, client):
         """POST /tasks - maksimal 10 task per user"""
         for i in range(10):
-            client.post("/tasks", json={
-                "user_id": 1,
-                "title": f"Task {i + 1}"
-            })
-        response = client.post("/tasks", json={
-            "user_id": 1,
-            "title": "Extra task"
-        })
-        assert response.status_code == 400
+            client.post("/tasks", json={"user_id": 1, "title": f"Task {i + 1}"})
+        response = client.post("/tasks", json={"user_id": 1, "title": "Extra task"})
+        assert response.status_code == 400, (
+            "Expected status 400 when exceeding task limit"
+        )
 
     def test_get_all_tasks(self, client):
         """GET /tasks - mendapatkan semua task"""
         response = client.get("/tasks")
-        assert response.status_code == 200
+        assert response.status_code == 200, "Expected status 200 on list tasks"
         data = response.get_json()
-        assert len(data) == 3
+        assert len(data) == 3, f"Expected 3 tasks, got {len(data)}"
 
     def test_get_task_by_id_found(self, client):
         """GET /tasks/<task_id> - task ditemukan"""
         response = client.get("/tasks/1")
-        assert response.status_code == 200
+        assert response.status_code == 200, "Expected status 200 for existing task"
         data = response.get_json()
-        assert data["title"] == "Buy groceries"
+        assert data["title"] == "Buy groceries", (
+            "Expected task title to be 'Buy groceries'"
+        )
 
     def test_get_task_by_id_not_found(self, client):
         """GET /tasks/<task_id> - task tidak ditemukan"""
         response = client.get("/tasks/99")
-        assert response.status_code == 404
+        assert response.status_code == 404, "Expected status 404 for missing task"
 
     def test_get_tasks_by_user(self, client):
         """GET /tasks/user/<user_id> - mendapatkan task berdasarkan user"""
         response = client.get("/tasks/user/1")
-        assert response.status_code == 200
+        assert response.status_code == 200, "Expected status 200 for tasks by user"
         data = response.get_json()
-        assert len(data) == 2
+        assert len(data) == 2, f"Expected 2 tasks for user_id=1, got {len(data)}"
         for task in data:
-            assert task["user_id"] == 1
+            assert task["user_id"] == 1, (
+                "Expected task.user_id to match requested user_id"
+            )
 
     def test_mark_task_completed_success(self, client):
         """PATCH /tasks/<task_id>/complete - menandai task selesai"""
         response = client.patch("/tasks/1/complete")
-        assert response.status_code == 200
+        assert response.status_code == 200, "Expected status 200 when completing task"
         data = response.get_json()
-        assert data["is_completed"] is True
+        assert data["is_completed"] is True, (
+            "Expected is_completed to be True after completion"
+        )
 
     def test_mark_task_completed_not_found(self, client):
         """PATCH /tasks/<task_id>/complete - task tidak ditemukan"""
         response = client.patch("/tasks/99/complete")
-        assert response.status_code == 404
+        assert response.status_code == 404, "Expected status 404 for missing task"
 
     def test_delete_task_success(self, client):
         """DELETE /tasks/<task_id> - berhasil menghapus task"""
         response = client.delete("/tasks/1")
-        assert response.status_code == 200
+        assert response.status_code == 200, "Expected status 200 on successful deletion"
         data = response.get_json()
-        assert data["message"] == "Task deleted successfully"
+        assert data["message"] == "Task deleted successfully", (
+            "Expected deletion message to be 'Task deleted successfully'"
+        )
 
     def test_delete_task_not_found(self, client):
         """DELETE /tasks/<task_id> - task tidak ditemukan"""
         response = client.delete("/tasks/99")
-        assert response.status_code == 404
+        assert response.status_code == 404, "Expected status 404 for missing task"
 
     def test_delete_task_leaves_other_tasks(self, client):
         """DELETE /tasks/<task_id> - menghapus task tidak affect task lain"""
         client.delete("/tasks/1")
         response = client.get("/tasks")
         data = response.get_json()
-        assert len(data) == 2
+        assert len(data) == 2, f"Expected 2 remaining tasks, got {len(data)}"
 
 
 class TestEdgeCases:
-    """Test untuk edge cases"""
+    """E2E test untuk edge cases"""
 
     def test_same_title_different_users(self, client):
         """Title sama boleh dipakai user berbeda"""
         client.post("/tasks", json={"user_id": 1, "title": "Buy groceries"})
         response = client.post("/tasks", json={"user_id": 2, "title": "Buy groceries"})
-        assert response.status_code == 201
+        assert response.status_code == 201, (
+            "Expected same title to be allowed for different users"
+        )
 
     def test_task_title_case_sensitive(self, client):
         """Title Buy Groceries dan buy groceries dianggap berbeda"""
         client.post("/tasks", json={"user_id": 1, "title": "Buy Groceries"})
         response = client.post("/tasks", json={"user_id": 1, "title": "buy groceries"})
-        assert response.status_code == 201
+        assert response.status_code == 201, (
+            "Expected titles with different case to be treated as distinct"
+        )
