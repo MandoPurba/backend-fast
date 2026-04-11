@@ -119,28 +119,10 @@ uv run pytest tests/test_services.py -v
 # Jalankan hanya handler (E2E) tests
 uv run pytest tests/test_handlers.py -v
 
-# Jalankan dengan coverage
-uv run pytest tests/ -v --cov
+
 ```
 
-### Menggunakan uv test
 
-```bash
-# Jalankan semua tests
-uv test
-
-# Jalankan dengan verbose
-uv test -- -v
-
-# Jalankan hanya database tests
-uv test tests/test_database.py
-
-# Jalankan hanya service tests
-uv test tests/test_services.py
-
-# Jalankan hanya handler (E2E) tests
-uv test tests/test_handlers.py
-```
 
 ## Menjalankan API
 
