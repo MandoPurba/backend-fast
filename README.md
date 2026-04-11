@@ -120,10 +120,6 @@ uv run pytest tests/test_services.py -v
 uv run pytest tests/test_handlers.py -v
 
 
-```
-
-
-
 ## Menjalankan API
 
 ```bash
