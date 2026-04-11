@@ -42,9 +42,12 @@ irm https://astral.sh/uv/install.ps1 | iex
 
 1. **Buka Terminal**
 
-2. **Clone atau download project ini**, lalu masuk ke folder project:
+2. **Clone project ini**, lalu masuk ke folder project:
 ```bash
-cd task-forge-lite
+git clone https://github.com/MandoPurba/backend-fast.git
+# atau (SSH)
+git clone git@github.com:MandoPurba/backend-fast.git
+cd backend-fast
 ```
 
 3. **Install dependencies dengan uv:**
@@ -67,9 +70,12 @@ python -c "import flask; print(flask.__version__)"
 
 1. **Buka Command Prompt atau PowerShell**
 
-2. **Clone atau download project ini**, lalu masuk ke folder project:
+2. **Clone project ini**, lalu masuk ke folder project:
 ```powershell
-cd task-forge-lite
+git clone https://github.com/MandoPurba/backend-fast.git
+# atau (SSH)
+git clone git@github.com:MandoPurba/backend-fast.git
+cd backend-fast
 ```
 
 3. **Install dependencies dengan uv:**
