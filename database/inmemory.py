@@ -57,18 +57,19 @@ def get_all_tasks() -> list[dict]:
     return tasks
 
 def get_task_by_id(task_id: int) -> dict | None:
-    """Ambil task berdasarkan id"""
-    # TODO: Cari task by id, return dict atau None
-    pass
-
+    for task in tasks:
+        if task["id"] == task_id:
+            return task
+    return none
 
 def get_tasks_by_user(user_id: int) -> list[dict]:
-    """Ambil semua task berdasarkan user_id"""
-    # TODO: Filter task by user_id
-    pass
-
+    for tasks in users:
+        if tasks ["id"] == user_id:
+            return task
+    return user
 
 def create_task(user_id: int, title: str) -> dict:
+    
     """Buat task baru untuk user tertentu"""
     # TODO: Validasi user ada, buat task baru is_completed=False
     pass
