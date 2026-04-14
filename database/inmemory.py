@@ -15,40 +15,46 @@ tasks = [
     {"id": 3, "title": "Read a book", "is_completed": False, "user_id": 2},
 ]
 
+initial_user = users.copy()
+initial_tasks = tasks.copy()
+
 # ID counters
 user_id_counter = 3
 task_id_counter = 4
 
 
 def reset_data():
-    """Reset semua data ke state awal"""
-    # TODO: Reset users, tasks, user_id_counter, task_id_counter ke data awal
-    pass
+    global users, tasks, user_id_counter, task_id_counter
 
+    users = initial_users = users.copy()
+    tasks = initial_tasks = tasks.copy()
+
+    user_id_counter = 3
+    task_id_counter = 4
 
 def get_all_users() -> list[dict]:
-    """Ambil semua user"""
-    # TODO: Kembalikan list users
-    pass
-
-
+    return users
+    
 def get_user_by_id(user_id: int) -> dict | None:
-    """Ambil user berdasarkan id"""
-    # TODO: Cari user by id, return dict atau None
-    pass
-
+    for user in users:
+        if user["id"] == user_id:
+            return user
+    return none
 
 def create_user(name: str) -> dict:
-    """Buat user baru"""
-    # TODO: Tambah user baru dengan auto-increment id
-    pass
+    global user_id_counter
+    new_user = {
+        "id" : user_id_counter,
+        "name" : name
+    }
+    users.append(new.user)
+    user_id_counter +=
+
+    return new_user
 
 
 def get_all_tasks() -> list[dict]:
-    """Ambil semua task"""
-    # TODO: Kembalikan list tasks
-    pass
-
+    return tasks
 
 def get_task_by_id(task_id: int) -> dict | None:
     """Ambil task berdasarkan id"""
