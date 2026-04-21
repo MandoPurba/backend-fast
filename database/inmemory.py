@@ -69,10 +69,22 @@ def get_tasks_by_user(user_id: int) -> list[dict]:
     return user
 
 def create_task(user_id: int, title: str) -> dict:
-    
     """Buat task baru untuk user tertentu"""
-    # TODO: Validasi user ada, buat task baru is_completed=False
-    pass
+    global task_id_counter
+        if get_user_by_id(user_id) is_none:
+            return none
+
+    new_task = {
+        "id": task_id_counter,
+        "title": title,
+        "is_complite": False,
+        "user_id": user_id
+    }
+    task.append(new_task)
+    task_id_counter += 1
+
+    return new_task
+    
 
 
 def update_task(task_id: int, updates: dict) -> dict:
