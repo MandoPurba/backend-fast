@@ -88,12 +88,21 @@ def create_task(user_id: int, title: str) -> dict:
 
 
 def update_task(task_id: int, updates: dict) -> dict:
+    task = get_task_by_id(task_id)
+    if task is none:
+        return none
+
+    task.update(updates)
+    return task
     """Update task berdasarkan id"""
     # TODO: Update task fields (title/is_completed) berdasarkan id
-    pass
 
 
 def delete_task(task_id: int) -> bool:
     """Hapus task berdasarkan id"""
-    # TODO: Hapus task dari list, return True/False
-    pass
+    for task in task:
+        if task["id"] == task_id:
+            tasks.remove(task)
+            return True
+
+    return False
